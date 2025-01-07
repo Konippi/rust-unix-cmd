@@ -1,8 +1,8 @@
 [package]
-name = "cat"
+name = "head"
 version.workspace = true
 edition.workspace = true
-description = "A simple `cat` command implementation"
+description = "A simple `head` command implementation"
 
 [dependencies]
 anyhow = { workspace = true }
