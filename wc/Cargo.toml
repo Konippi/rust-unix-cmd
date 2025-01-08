@@ -1,0 +1,14 @@
+[package]
+name = "wc"
+version.workspace = true
+edition.workspace = true
+description = "A simple `wc` command implementation"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+
+[dev-dependencies]
+assert_cmd = { workspace = true }
+predicates = { workspace = true }
+rand = { workspace = true }
