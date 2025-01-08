@@ -8,3 +8,10 @@ Released: January 2022
 Publisher(s): O'Reilly Media, Inc.
 ISBN: 9781098109431
 ```
+
+## Commands
+
+- `echo`
+- `cat`
+- `head`
+- `wc`
