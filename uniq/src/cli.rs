@@ -14,8 +14,8 @@ pub struct Cli {
     #[arg(
         short = 'c',
         long = "count",
-        help = "Show counts",
-        conflicts_with = "repeated"
+        value_name = "COUNT",
+        help = "Show counts"
     )]
     pub count: bool,
 }
