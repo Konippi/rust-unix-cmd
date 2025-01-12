@@ -1,0 +1,16 @@
+[package]
+name = "find"
+version.workspace = true
+edition.workspace = true
+description = "A simple `find` command implementation"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+walkdir = "2.5.0"
+regex = "1.11.1"
+
+[dev-dependencies]
+assert_cmd = { workspace = true }
+predicates = { workspace = true }
+rand = { workspace = true }
