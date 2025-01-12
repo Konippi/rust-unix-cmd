@@ -5,7 +5,7 @@ pub enum Entry {
     #[value(name = "d")]
     Dir,
     #[value(name = "f")]
-    FIle,
+    File,
     #[value(name = "l")]
     Link,
 }
