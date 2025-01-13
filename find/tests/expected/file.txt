@@ -1,0 +1,1 @@
+tests/inputs/dir/file.txt

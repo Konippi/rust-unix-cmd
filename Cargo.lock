@@ -222,6 +222,7 @@ dependencies = [
  "predicates",
  "rand",
  "regex",
+ "tempfile",
  "walkdir",
 ]
 

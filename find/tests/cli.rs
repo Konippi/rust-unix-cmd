@@ -1,7 +1,7 @@
 use assert_cmd::Command;
 use predicates::prelude::predicate;
 
-use std::{borrow::Cow, fs};
+use std::{borrow::Cow, fs, os::unix};
 
 mod util;
 
@@ -98,9 +98,33 @@ fn test_find_name() -> anyhow::Result<()> {
 }
 
 #[test]
-fn test_find_entry_type() -> anyhow::Result<()> {
-    run(
-        &["tests/inputs/dir", "-t", "d"],
-        "tests/expected/entry_type.txt",
-    )
+fn test_find_dir() -> anyhow::Result<()> {
+    run(&["tests/inputs/dir", "-t", "d"], "tests/expected/dir.txt")
+}
+
+#[test]
+fn test_find_file() -> anyhow::Result<()> {
+    run(&["tests/inputs/dir", "-t", "f"], "tests/expected/file.txt")
+}
+
+#[test]
+fn test_find_link() -> anyhow::Result<()> {
+    let symlink_file = "tests/inputs/file-link.txt";
+
+    create_symbolic_link("tests/inputs/dir/file.txt", symlink_file)?;
+    run(&["tests/inputs", "-t", "l"], "tests/expected/link.txt")?;
+
+    fs::remove_file(symlink_file)?;
+
+    Ok(())
+}
+
+fn create_symbolic_link(target_path: &str, link_path: &str) -> anyhow::Result<()> {
+    #[cfg(windows)]
+    windows::fs::symlink_file(target_path, link_path)?;
+
+    #[cfg(not(windows))]
+    unix::fs::symlink(target_path, link_path)?;
+
+    Ok(())
 }
