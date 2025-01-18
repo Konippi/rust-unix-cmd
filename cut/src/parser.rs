@@ -5,7 +5,7 @@ use regex::Regex;
 
 use crate::extract::PositionList;
 
-pub fn parse_position(range: &str) -> anyhow::Result<PositionList> {
+pub fn parse_position(range: String) -> anyhow::Result<PositionList> {
     let range_re = Regex::new(r"^(\d+)-(\d+)$").unwrap();
     range
         .split(',')
@@ -37,4 +37,30 @@ pub fn parse_index(input: &str) -> anyhow::Result<usize> {
                 .map(|val| usize::from(val) - 1)
                 .map_err(|_| value_error())
         })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_position() {
+        assert_eq!(
+            parse_position("1,2,3".to_string()).unwrap(),
+            vec![0..1, 1..2, 2..3]
+        );
+        assert_eq!(
+            parse_position("1-3,5,7-10".to_string()).unwrap(),
+            vec![0..3, 4..5, 6..10]
+        );
+    }
+
+    #[test]
+    fn test_parse_index() {
+        assert_eq!(parse_index("1").unwrap(), 0);
+        assert_eq!(parse_index("10").unwrap(), 9);
+        assert!(parse_index("0").is_err());
+        assert!(parse_index("+1").is_err());
+        assert!(parse_index("a").is_err());
+    }
 }

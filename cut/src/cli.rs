@@ -28,10 +28,7 @@ pub struct Cli {
 fn validate_delimiter(val: &str) -> anyhow::Result<()> {
     let bytes = val.as_bytes();
     if bytes.len() != 1 {
-        bail!(anyhow::anyhow!(
-            "--delimiter \"{}\" must be a single character",
-            val
-        ));
+        bail!("--delimiter \"{}\" must be a single character", val);
     }
     Ok(())
 }
