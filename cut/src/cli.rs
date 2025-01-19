@@ -32,3 +32,16 @@ fn validate_delimiter(val: &str) -> anyhow::Result<()> {
     }
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_validate_delimiter() {
+        assert!(validate_delimiter("\t").is_ok());
+        assert!(validate_delimiter(",").is_ok());
+        assert!(validate_delimiter(" ").is_ok());
+        assert!(validate_delimiter(",.").is_err());
+    }
+}

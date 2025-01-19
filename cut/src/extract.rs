@@ -49,3 +49,35 @@ pub fn extract_chars(line: &str, char_pos: &[Range<usize>]) -> String {
         .flat_map(|range| range.filter_map(|i| chars.get(i)))
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_extract_fields() {
+        let record = StringRecord::from(vec!["á", "b", "c"]);
+        assert_eq!(extract_fields(&record, &[0..1]), &["á"]);
+        assert_eq!(extract_fields(&record, &[1..2]), &["b"]);
+        assert_eq!(extract_fields(&record, &[2..3]), &["c"]);
+        assert_eq!(extract_fields(&record, &[0..1, 2..3]), &["á", "c"]);
+    }
+
+    #[test]
+    fn test_extract_bytes() {
+        assert_eq!(extract_bytes("ábc", &[0..1]), "�".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..2]), "á".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..3]), "áb".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..4]), "ábc".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..1, 1..2]), "á".to_string());
+    }
+
+    #[test]
+    fn test_extract_chars() {
+        assert_eq!(extract_bytes("", &[0..1]), "".to_string());
+        assert_eq!(extract_chars("ábc", &[0..1]), "á");
+        assert_eq!(extract_chars("ábc", &[1..2]), "b");
+        assert_eq!(extract_chars("ábc", &[2..3]), "c");
+        assert_eq!(extract_chars("ábc", &[0..1, 2..3]), "ác");
+    }
+}
