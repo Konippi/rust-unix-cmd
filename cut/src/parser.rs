@@ -9,7 +9,6 @@ pub fn parse_position(range: String) -> anyhow::Result<PositionList> {
     let range_re = Regex::new(r"^(\d+)-(\d+)$").unwrap();
     range
         .split(',')
-        .into_iter()
         .map(|val| {
             parse_index(val).map(|index| index..index + 1).or_else(|e| {
                 range_re.captures(val).ok_or(e).and_then(|cap| {

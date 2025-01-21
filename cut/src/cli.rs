@@ -1,4 +1,3 @@
-use anyhow::bail;
 use clap::Parser;
 
 use crate::extract::ExtractArgs;
@@ -17,31 +16,9 @@ pub struct Cli {
         long,
         value_name = "DELIMITER",
         default_value = "\t",
-        help = "Field delimiter",
-        value_parser = validate_delimiter
+        help = "Field delimiter"
     )]
     pub delimiter: String,
     #[command(flatten)]
     pub extract: ExtractArgs,
-}
-
-fn validate_delimiter(val: &str) -> anyhow::Result<()> {
-    let bytes = val.as_bytes();
-    if bytes.len() != 1 {
-        bail!("--delimiter \"{}\" must be a single character", val);
-    }
-    Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_validate_delimiter() {
-        assert!(validate_delimiter("\t").is_ok());
-        assert!(validate_delimiter(",").is_ok());
-        assert!(validate_delimiter(" ").is_ok());
-        assert!(validate_delimiter(",.").is_err());
-    }
 }

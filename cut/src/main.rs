@@ -1,5 +1,6 @@
 use std::io::{self, BufRead};
 
+use anyhow::bail;
 use clap::Parser;
 use cli::Cli;
 use csv::{ReaderBuilder, WriterBuilder};
@@ -14,7 +15,13 @@ mod parser;
 
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
-    let delimiter = *cli.delimiter.as_bytes().first().unwrap();
+
+    let delimiter_bytes = cli.delimiter.as_bytes();
+    if delimiter_bytes.len() != 1 {
+        bail!("--delimiter \"{}\" must be a single byte", cli.delimiter);
+    }
+    let delimiter = *delimiter_bytes.first().unwrap();
+
     let extract_arg = if let Some(fields) = cli.extract.fields.map(parse_position).transpose()? {
         Extract::Fields(fields)
     } else if let Some(bytes) = cli.extract.bytes.map(parse_position).transpose()? {
@@ -39,8 +46,7 @@ fn main() -> anyhow::Result<()> {
                         .from_writer(io::stdout());
 
                     for record in reader.records() {
-                        let record = record?;
-                        writer.write_record(extract_fields(&record, field_pos))?;
+                        writer.write_record(extract_fields(&record?, field_pos))?;
                     }
                 }
                 Extract::Bytes(byte_pos) => {
