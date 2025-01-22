@@ -69,9 +69,21 @@ fn dies_bad_delimiter() -> anyhow::Result<()> {
 }
 
 #[test]
-fn dies_bad_range() -> anyhow::Result<()> {
+fn dies_bad_range_fields() -> anyhow::Result<()> {
     dies(&[CSV, "-f", "0-1"], r#"Invalid index: "0""#)?;
     dies(&[CSV, "-f", "1-1"], r#"Invalid range: "1-1""#)
+}
+
+#[test]
+fn dies_bad_range_bytes() -> anyhow::Result<()> {
+    dies(&[CSV, "-b", "0-1"], r#"Invalid index: "0""#)?;
+    dies(&[CSV, "-b", "1-1"], r#"Invalid range: "1-1""#)
+}
+
+#[test]
+fn dies_bad_range_chars() -> anyhow::Result<()> {
+    dies(&[CSV, "-c", "0-1"], r#"Invalid index: "0""#)?;
+    dies(&[CSV, "-c", "1-1"], r#"Invalid range: "1-1""#)
 }
 
 fn run(args: &[&str], expected_file: &str) -> anyhow::Result<()> {
