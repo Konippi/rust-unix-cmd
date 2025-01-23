@@ -1,5 +1,5 @@
 [workspace]
-members = ["cat", "cut", "echo", "find", "head", "uniq", "wc"]
+members = ["cat", "cut", "echo", "find", "grep", "head", "uniq", "wc"]
 
 [workspace.package]
 name = "rust-unix-cmd"
