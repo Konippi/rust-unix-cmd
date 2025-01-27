@@ -12,14 +12,14 @@ fn main() -> anyhow::Result<()> {
     let pattern = RegexBuilder::new(&cli.pattern)
         .case_insensitive(cli.insensitive)
         .build()
-        .map_err(|_| anyhow!(r#"Invalid pattern {}"#, cli.pattern))?;
+        .map_err(|_| anyhow!(r#"Invalid pattern "{}""#, cli.pattern))?;
     let entries = file::find_files(&cli.files, cli.recursive);
     let num_files = entries.len();
     let print = |filename: &str, val: &str| {
         if num_files > 1 {
-            println!("{filename}:{val}");
+            print!("{filename}:{val}");
         } else {
-            println!("{val}");
+            print!("{val}");
         }
     };
 
@@ -27,15 +27,15 @@ fn main() -> anyhow::Result<()> {
         match entry {
             Err(e) => eprintln!("{e}"),
             Ok(filename) => match file::open(&filename) {
-                Err(e) => eprint!("{filename}: {e}"),
+                Err(e) => eprintln!("{filename}: {e}"),
                 Ok(f) => match file::find_lines(f, &pattern, cli.invert) {
-                    Err(e) => eprint!("{e}"),
+                    Err(e) => eprintln!("{e}"),
                     Ok(matcehes) => {
                         if cli.count {
                             print(&filename, &format!("{}\n", matcehes.len()));
                         } else {
                             for line in &matcehes {
-                                print(&filename, line);
+                                print(&filename, &format!("{}\n", line));
                             }
                         }
                     }

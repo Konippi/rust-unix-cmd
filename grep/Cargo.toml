@@ -15,3 +15,4 @@ assert_cmd = { workspace = true }
 predicates = { workspace = true }
 tempfile = { workspace = true }
 rand = { workspace = true }
+sys-info = "0.9.1"

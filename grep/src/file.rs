@@ -68,3 +68,75 @@ pub fn find_lines<R: BufRead>(
 
     Ok(matches)
 }
+
+#[cfg(test)]
+mod tests {
+    use io::Cursor;
+    use regex::RegexBuilder;
+
+    use super::*;
+
+    #[test]
+    fn test_find_files() {
+        let files = find_files(&["./tests/inputs/sample.txt".to_string()], false);
+        assert_eq!(files.len(), 1);
+        assert_eq!(files[0].as_ref().unwrap(), "./tests/inputs/sample.txt");
+
+        let files = find_files(&["./tests/inputs".to_string()], false);
+        assert_eq!(files.len(), 1);
+        if let Err(e) = &files[0] {
+            assert_eq!(e.to_string(), "./tests/inputs is a directory");
+        }
+
+        let res = find_files(&["./tests/inputs".to_string()], true);
+        let mut files: Vec<String> = res
+            .iter()
+            .map(|r| r.as_ref().unwrap().replace("\\", "/"))
+            .collect();
+        files.sort();
+        assert_eq!(files.len(), 3);
+        assert_eq!(
+            files,
+            vec![
+                "./tests/inputs/empty.txt",
+                "./tests/inputs/sample.txt",
+                "./tests/inputs/sample2.txt"
+            ]
+        );
+
+        let bad = find_files(&["./tests/inputs/bad.txt".to_string()], false);
+        assert_eq!(bad.len(), 1);
+        if let Err(e) = &bad[0] {
+            assert_eq!(
+                e.to_string(),
+                "./tests/inputs/bad.txt: No such file or directory (os error 2)"
+            );
+        }
+    }
+
+    #[test]
+    fn test_find_lines() {
+        let text = b"Lorem\nIpsum\r\nDOLOR";
+        let re1 = Regex::new("or").unwrap();
+        let matches = find_lines(Cursor::new(&text), &re1, false);
+        assert!(matches.is_ok());
+        assert_eq!(matches.unwrap().len(), 1);
+
+        let matches = find_lines(Cursor::new(&text), &re1, true);
+        assert!(matches.is_ok());
+        assert_eq!(matches.unwrap().len(), 2);
+
+        let re2 = RegexBuilder::new("or")
+            .case_insensitive(true)
+            .build()
+            .unwrap();
+
+        let matches = find_lines(Cursor::new(&text), &re2, false);
+        assert!(matches.is_ok());
+        assert_eq!(matches.unwrap().len(), 2);
+
+        let matches = find_lines(Cursor::new(&text), &re2, true);
+        assert!(matches.is_ok());
+        assert_eq!(matches.unwrap().len(), 1);
+    }
+}
